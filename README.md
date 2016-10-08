@@ -11,6 +11,6 @@ It uses fork of [great plugin](https://github.com/mapsplugin/cordova-plugin-goog
 
 ## Runnning in simulator and device
 
-Simply run `npm test` from project directory. Xcode would open your project soon (first time it can take a while -- need to download about 120mb of Google Maps SDK) from [sdk repo](https://github.com/dmitry-sher/cordova-plugin-googlemaps-sdk).
+Simply run `npm test` from project directory. Xcode would open your project soon. First time it can take a while -- need to download about 120mb of Google Maps SDK from [sdk repo](https://github.com/dmitry-sher/cordova-plugin-googlemaps-sdk).
 
 The same build you can run on a device. You can get an error in XCode about Bad Access. Check [this SO answer](http://stackoverflow.com/questions/31264537/adding-google-maps-as-subview-crashes-ios-app-with-exc-bad). You need to turn off `GPU frame capture` in both your app and CordovaLib scheme.

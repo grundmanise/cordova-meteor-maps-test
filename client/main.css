@@ -1,7 +1,26 @@
 /* CSS declarations go here */
 #map {
+	/*position: absolute;*/
 	width: 100vw;
-	height: 100vh;
+	height: 50vh;
+	margin-top: 20px;
+}
+
+.wave {
+	height: 21px;
+	width: 100%;
+	-webkit-transform: scaleY(-1);
+	background: url('/svg/patterns/pattern_wave.svg') repeat 0 0/contain;
+	background-color: rgba(0,0,0,0);
+	position: absolute;
+}
+
+.wave.top {
+	margin-top: 0;
+}
+
+.wave.bottom {
+	-webkit-transform: translateY(-100%);
 }
 
 html, body {
