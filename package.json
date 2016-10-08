@@ -1,0 +1,11 @@
+{
+  "name": "maps-test",
+  "private": true,
+  "scripts": {
+    "start": "meteor run",
+    "test": "meteor run ios-device --settings settings.json"
+  },
+  "dependencies": {
+    "meteor-node-stubs": "~0.2.0"
+  }
+}
