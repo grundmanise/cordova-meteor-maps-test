@@ -53,11 +53,4 @@ Template.map.onRendered(() => {
 
 function onMapReady() {
 	console.log('[onMapReady]');
-	// map.animateCamera({
-	// 	target: {lat: 37.422359, lng: -122.084344},
-	// 	zoom: 17,
-	// 	tilt: 0,
-	// 	bearing: 0,
-	// 	duration: 5000
-	// });
 }
