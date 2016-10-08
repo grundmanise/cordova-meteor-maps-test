@@ -120,6 +120,7 @@ Template.map.onRendered(() => {
 		map.clear();
 		map.setStyles(JSON.stringify(MapStyles));
 		window.mainMap = map;
+		inited = true;
 		map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
 	})
 });
