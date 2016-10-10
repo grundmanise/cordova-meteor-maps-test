@@ -13,7 +13,7 @@ export const RenderText = {
 			finished = false,
 			width = 0,
 			top = 0,
-			stringHeight = RenderText.tranlatePixels(textOptions.fontSize) + 4,
+			stringHeight = RenderText.tranlatePixels(textOptions.fontSize) + 8,
 			lineHeight = RenderText.tranlatePixels(textOptions.fontSize + textOptions.lineSpacing),
 			ctx = targetCanvas.getContext('2d'),
 			maxWidth = RenderText.tranlatePixels(textOptions.maxWidth);
@@ -36,7 +36,7 @@ export const RenderText = {
 		// set up canvas
 		let
 			width = RenderText.tranlatePixels(textOptions.maxWidth),
-			height = +RenderText.tranlatePixels(textOptions.fontSize)+4,
+			height = +RenderText.tranlatePixels(textOptions.fontSize)+8,
 			fontSize = RenderText.tranlatePixels(textOptions.fontSize),
 			currentLeft = 0,
 			wordSpacing = RenderText.tranlatePixels(textOptions.wordSpacing);
@@ -61,7 +61,7 @@ export const RenderText = {
 	renderWord(word, canvas, fontSize) {
 		let {ctx} = RenderText.setRenderingStyle(canvas, fontSize);
 		let textWidth = Math.round(ctx.measureText(word).width);
-		RenderText.resizeAndClearCanvas(canvas, +textWidth+4, +fontSize+4);
+		RenderText.resizeAndClearCanvas(canvas, +textWidth+4, +fontSize+8);
 
 		// reset context after resize.
 		// parentheses are needed for correct DESTRUCTURING ASSIGNMENT

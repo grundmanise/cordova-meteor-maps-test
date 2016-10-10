@@ -88,40 +88,30 @@ Template.map.onRendered(() => {
 
 function onMapReady() {
 	console.log('[onMapReady]');
-	addMarkers();
+	MarkersCreator.createMarkers(Places, PlaceTypes, map, onAllMarkersReady);
+	// addMarkers();
 }
 
 function onAllMarkersReady() {
 	console.log('[onAllMarkersReady]');
 }
 
-var
-	trys = 0,
-	trysMax = 100,
-	tryInt = 500;
+// var
+// 	trys = 0,
+// 	trysMax = 100,
+// 	tryInt = 500;
 
-function addMarkers() {
-	if (!map) {
-		if (trys > trysMax) {
-			console.warn('failed to make markers -- map wait timeout');
-			return;
-		}
-		trys++;
-		setTimeout(addMarkers, tryInt);
-		return;
-	}
+// function addMarkers() {
+// 	// we need the map to exist.. but if addMarkers is
+// 	if (!map) {
+// 		if (trys > trysMax) {
+// 			console.warn('failed to make markers -- map wait timeout');
+// 			return;
+// 		}
+// 		trys++;
+// 		setTimeout(addMarkers, tryInt);
+// 		return;
+// 	}
 
-	// let
-	// 	wordCanvas = document.getElementById('wordCanvas'),
-	// 	stringCanvas = document.getElementById('stringCanvas'),
-	// 	textCanvas = document.getElementById('textCanvas');
-	// let {width, height} = RenderText.renderText('Bubba Gump Fishery condition', textCanvas, stringCanvas, wordCanvas, {
-	// 	maxWidth: 100,
-	// 	wordSpacing: 5,
-	// 	lineSpacing: 2,
-	// 	fontSize: 15
-	// });
-	// console.log('res width = ', width, ', height = ', height);
-	// RenderText.renderWord('Bubba Gump', document.getElementById('wordCanvas'), 15);
-	MarkersCreator.createMarkers(Places, PlaceTypes, map, onAllMarkersReady);
-}
+// 	MarkersCreator.createMarkers(Places, PlaceTypes, map, onAllMarkersReady);
+// }

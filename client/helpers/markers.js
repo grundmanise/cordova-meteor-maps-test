@@ -50,7 +50,7 @@ export const MarkersCreator = {
 		stringCanvas = document.createElement('canvas');
 		wordCanvas = document.createElement('canvas');
 		compositeCanvas = document.createElement('canvas');
-		// document.body.appendChild(compositeCanvas);
+		document.body.appendChild(compositeCanvas);
 		placesQueue = places;
 
 		MarkersCreator.prepareTextWorker(() => {
@@ -114,7 +114,7 @@ export const MarkersCreator = {
 		let
 			delta = 5,
 			targetWidth = Math.max(width, markerCanvasWidth),
-			targetHeight = markerCanvasHeight + delta + height,
+			targetHeight = markerCanvasHeight + 3*delta + height,
 			markerX = Math.floor((targetWidth - markerCanvasWidth) / 2),
 			textX = Math.floor((targetWidth - width) / 2),
 			textY = markerCanvasHeight + delta;
