@@ -2,12 +2,12 @@
 // the entire section is optional.
 App.info({
     id: 'com.lokls.maps-test.ios',
-    version: '0.0.28',
-    name: 'Lokls',
+    version: '0.0.1',
+    name: 'map-test',
     description: 'App description',
     author: 'SIA Silver Spoon',
-    email: 'info@sspoon.me',
-    website: 'http://lokls.com',
+    email: 'dima.virtuallight@gmail.com',
+    website: 'dmitrysher.club',
 });
 
 // App.icons({
