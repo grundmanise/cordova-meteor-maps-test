@@ -118,6 +118,7 @@ export const MarkersCreator = {
 				aW: targetWidth/4,
 				aH: markerCanvasHeight/2
 			};
+			placesQueue[placeIdx].idx = placeIdx;
 			placeIdx++;
 			setImmediate(() => {
 				MarkersCreator.prepareTextWorker(cb);
@@ -166,7 +167,7 @@ export const MarkersCreator = {
 				icon
 			}, function(marker) {
 				totalMarkersReady++;
-				marker.set('index', markers.length);
+				marker.set('index', marker.get('place').idx);
 				markers.push(marker);
 				marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
 				if (totalMarkersReady >= needToMakeMarkers) {
