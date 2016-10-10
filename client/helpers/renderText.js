@@ -20,7 +20,7 @@ export const RenderText = {
 		RenderText.resizeAndClearCanvas(targetCanvas, maxWidth, lineHeight*5);
 		while (!finished) {
 			({index, finished, width} = RenderText.renderString(words, stringCanvas, wordCanvas, index, textOptions));
-			console.log('[renderText] index = ', index, ', finished = ', finished, ', width = ', width);
+			// console.log('[renderText] index = ', index, ', finished = ', finished, ', width = ', width);
 			let x = Math.floor((maxWidth - width)/2);
 			ctx.drawImage(stringCanvas, 0, 0, width, stringHeight, x, top, width, stringHeight);
 			top += lineHeight;

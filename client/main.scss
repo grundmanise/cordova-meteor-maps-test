@@ -253,31 +253,38 @@ body {
 	-webkit-transform: translateY(-100%);
 }
 
-#canvas {
-	// visibility: hidden;
-	// position: absolute;
-	// z-index: -1;
-	width: 42.86vw;
-	height: 42.86vw;
+canvas {
+	background: #000
 }
 
-#wordCanvas {
-	width: 42.86vw;
-	height: 42.86vw;
-	background: #000;
+.hidden {
+	visibility: hidden;
 }
+// #canvas {
+// 	// visibility: hidden;
+// 	// position: absolute;
+// 	// z-index: -1;
+// 	width: 42.86vw;
+// 	height: 42.86vw;
+// }
 
-#stringCanvas {
-	width: 42.86vw;
-	height: 42.86vw;
-	background: #000;
-}
+// #wordCanvas {
+// 	width: 42.86vw;
+// 	height: 42.86vw;
+// 	background: #000;
+// }
 
-#textCanvas {
-	width: 42.86vw;
-	height: 42.86vw;
-	background: #000;
-}
+// #stringCanvas {
+// 	width: 42.86vw;
+// 	height: 42.86vw;
+// 	background: #000;
+// }
+
+// #textCanvas {
+// 	width: 42.86vw;
+// 	height: 42.86vw;
+// 	background: #000;
+// }
 
 html, body {
 	padding: 0;
