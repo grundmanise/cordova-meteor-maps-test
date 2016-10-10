@@ -11,9 +11,7 @@ var
 	markerCanvasWidth,
 	markerCanvasHeight,
 	placeIdx = 0,
-	placesQueue,
-	perfStart,
-	perfEnd;
+	placesQueue;
 
 var
 	targetCanvas,
@@ -25,15 +23,6 @@ function setImmediate(cb) {
 	Meteor.setTimeout(cb, 0);
 }
 
-function startPerf() {
-	perfStart = moment();
-}
-
-function getPerf(txt) {
-	var diff = moment().diff(perfStart);
-	console.log(`[perfCount ${txt}] ${diff}`);
-}
-
 export const MarkersCreator = {
 	init: function(ms) {
 		markerSize = ms;
@@ -41,12 +30,12 @@ export const MarkersCreator = {
 	},
 
 	createMarkers: function(places, placeTypes, map, cb) {
-		startPerf();
+		console.time('typeRender');
 		let canvas = document.createElement('canvas');
 		RenderText.resizeAndClearCanvas(canvas, markerSize*3, markerSize*3);
 		RenderSVG.renderPlaceTypes(placeTypes, canvas, (imgs) => {
 			// console.log('[MarkersCreator.createMarkers] types rendered');
-			getPerf('typeRender');
+			console.timeEnd('typeRender');
 			markerImages = imgs;
 			markerCanvasWidth = canvas.width;
 			markerCanvasHeight = canvas.height;
@@ -56,12 +45,7 @@ export const MarkersCreator = {
 	},
 
 	prepareTexts: function(places, map, cb) {
-		startPerf();
-		// let img = new Image();
-		// img.src = markerImages[1].iconMapActiveBase64;
-		// document.body.appendChild(img);
-		// for each place we need to make texts
-		// and
+		console.time('textRender');
 		targetCanvas = document.createElement('canvas');
 		stringCanvas = document.createElement('canvas');
 		wordCanvas = document.createElement('canvas');
@@ -70,7 +54,7 @@ export const MarkersCreator = {
 		placesQueue = places;
 
 		MarkersCreator.prepareTextWorker(() => {
-			getPerf('textRender');
+			console.timeEnd('textRender');
 			MarkersCreator.createMarkersReal(map);
 		});
 
@@ -148,7 +132,7 @@ export const MarkersCreator = {
 	},
 
 	createMarkersReal: function(map, cb) {
-		startPerf();
+		console.time('markerCreate');
 		let places = placesQueue;
 		needToMakeMarkers = places.length;
 		_.forEach(places, (place) => {
@@ -171,7 +155,7 @@ export const MarkersCreator = {
 				markers.push(marker);
 				marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
 				if (totalMarkersReady >= needToMakeMarkers) {
-					getPerf('markerCreate');
+					console.timeEnd('markerCreate');
 					if (cb)
 						cb();
 				}
