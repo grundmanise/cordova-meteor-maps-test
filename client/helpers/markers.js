@@ -19,6 +19,11 @@ var
 	wordCanvas,
 	compositeCanvas;
 
+// window.markerImages = markerImages;
+window.markers = markers;
+// window.markerSize = markerSize;
+
+
 function setImmediate(cb) {
 	Meteor.setTimeout(cb, 0);
 }
@@ -37,6 +42,7 @@ export const MarkersCreator = {
 			// console.log('[MarkersCreator.createMarkers] types rendered');
 			console.timeEnd('typeRender');
 			markerImages = imgs;
+			window.markerImages = markerImages;
 			markerCanvasWidth = canvas.width;
 			markerCanvasHeight = canvas.height;
 			MarkersCreator.prepareTexts(places, map, cb);
@@ -152,6 +158,8 @@ export const MarkersCreator = {
 			}, function(marker) {
 				totalMarkersReady++;
 				marker.set('index', marker.get('place').idx);
+				// animate marker
+				marker.setAnimation(plugin.google.maps.Animation.POPOUT);
 				markers.push(marker);
 				marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
 				if (totalMarkersReady >= needToMakeMarkers) {

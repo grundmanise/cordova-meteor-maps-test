@@ -89,7 +89,7 @@ export const RenderText = {
     // text-shadow: 0 0 2px $warmGrey90;
 	setShadowStyle(ctx) {
 		ctx.shadowColor = "rgba(157, 150, 150, 0.9)";
-		ctx.shadowBlur = 2;
+		ctx.shadowBlur = 4;
 	},
 
 	tranlatePixels(pixels) {

@@ -11,24 +11,20 @@ import './main.html';
 
 var
 	map, //map object
-	mapOptions, //map creation options
-	markers = [], //markers array
-	markerImages, //hash of base64-encoded png images of marker types
-	activeMarkerIdx = -1 // current active marker
+	mapOptions //map creation options
+	// markers = [], //markers array
+	// markerImages, //hash of base64-encoded png images of marker types
+	// activeMarkerIdx = -1 // current active marker
 ;
 const useMiami = true;
 const miamiLoc = {
 	lat: 25.775,
 	lng: -80.216
 }
-var markerSize;
 
 // export global vars
 window.Places = Places;
 window.PlaceTypes = PlaceTypes;
-window.markerImages = markerImages;
-window.markers = markers;
-window.markerSize = markerSize;
 
 Meteor.startup(() => {
 	console.log('[Meteor.startup]')
@@ -95,6 +91,12 @@ function onMapReady() {
 function onAllMarkersReady() {
 	console.log('[onAllMarkersReady]');
 }
+
+Template.map.events({
+	'click #button': function(e, t) {
+		markers[43].setAnimation(plugin.google.maps.Animation.POPOUT, function(res){console.log('res = ', res);} );
+	}
+})
 
 // var
 // 	trys = 0,
