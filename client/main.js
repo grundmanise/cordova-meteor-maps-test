@@ -94,7 +94,10 @@ function onAllMarkersReady() {
 
 Template.map.events({
 	'click #button': function(e, t) {
-		markers[43].setAnimation(plugin.google.maps.Animation.POPOUT, function(res){console.log('res = ', res);} );
+		// markers[43].setAnimation(plugin.google.maps.Animation.POPOUT, function(res){console.log('res = ', res);} );
+		plugin.google.maps.Map.startClustering(function(res) {
+			console.log('clustering res');
+		});
 	}
 })
 
