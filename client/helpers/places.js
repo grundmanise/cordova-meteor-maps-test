@@ -2266,3 +2266,7 @@ export const Places = [
     "_id": "Ppypqe26iBEsY7bCm"
   }
 ];
+
+_.forEach(Places, (p) => {
+  p.switched = Math.random() > 0.5;
+});

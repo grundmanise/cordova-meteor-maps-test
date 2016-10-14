@@ -253,6 +253,25 @@ body {
 	-webkit-transform: translateY(-100%);
 }
 
+button {
+  position: absolute;
+  margin-top: 10vh;
+}
+.button {
+  position: absolute;
+  right: 5vh;
+  width: 30vw;
+  text-align: center;
+  padding: 5vw;
+  border: 1px solid red;
+  top: 15vh;
+  z-index: 5;
+  background: rgba(255,255,255,0.7);
+  input {
+    display: none;
+  }
+}
+
 canvas {
 	background: #000
 }
@@ -260,31 +279,6 @@ canvas {
 .hidden {
 	visibility: hidden;
 }
-// #canvas {
-// 	// visibility: hidden;
-// 	// position: absolute;
-// 	// z-index: -1;
-// 	width: 42.86vw;
-// 	height: 42.86vw;
-// }
-
-// #wordCanvas {
-// 	width: 42.86vw;
-// 	height: 42.86vw;
-// 	background: #000;
-// }
-
-// #stringCanvas {
-// 	width: 42.86vw;
-// 	height: 42.86vw;
-// 	background: #000;
-// }
-
-// #textCanvas {
-// 	width: 42.86vw;
-// 	height: 42.86vw;
-// 	background: #000;
-// }
 
 html, body {
 	padding: 0;

@@ -77,6 +77,7 @@ Template.map.onRendered(() => {
 		map = plugin.google.maps.Map.getMap(div, mapOptions);
 		map.clear();
 		map.setStyles(JSON.stringify(MapStyles));
+		map.setClickable(true);
 		window.mainMap = map;
 		inited = true;
 		map.addEventListener(plugin.google.maps.event.MAP_READY, onMapReady);
@@ -91,46 +92,17 @@ function onMapReady() {
 
 function onAllMarkersReady() {
 	console.log('[onAllMarkersReady]');
+	let size = Math.floor($(window).width() / 7);
+	let style = {
+		img: clusterImage320,
+		size,
+		fontSize: 15,
+		textColor: '#85B1D7'
+	}
+	plugin.google.maps.Map.startClustering(style);
 }
 
-Template.map.events({
-	'click #button': function(e, t) {
-		// textColor: '#85B1D7',
-		// url: '/svg/map/ic/ic_cluster.svg',
-		// width: markerSize,
-		// height: markerSize,
-		// anchor: [0, 0],
-		// textSize: 15
-		let size = Math.floor($(window).width() / 7);
-		let style = {
-			img: clusterImage320,
-			size,
-			fontSize: 15,
-			textColor: '#85B1D7'
-		}
-		// markers[43].setAnimation(plugin.google.maps.Animation.POPOUT, function(res){console.log('res = ', res);} );
-		plugin.google.maps.Map.startClustering(style, function(res) {
-			console.log('clustering res');
-		});
-	}
-})
-
-// var
-// 	trys = 0,
-// 	trysMax = 100,
-// 	tryInt = 500;
-
-// function addMarkers() {
-// 	// we need the map to exist.. but if addMarkers is
-// 	if (!map) {
-// 		if (trys > trysMax) {
-// 			console.warn('failed to make markers -- map wait timeout');
-// 			return;
-// 		}
-// 		trys++;
-// 		setTimeout(addMarkers, tryInt);
-// 		return;
+// Template.map.events({
+// 	'click #button': function(e, t) {
 // 	}
-
-// 	MarkersCreator.createMarkers(Places, PlaceTypes, map, onAllMarkersReady);
-// }
+// });

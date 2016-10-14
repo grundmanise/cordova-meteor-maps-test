@@ -61,7 +61,7 @@ export const MarkersCreator = {
 
 		MarkersCreator.prepareTextWorker(() => {
 			console.timeEnd('textRender');
-			MarkersCreator.createMarkersReal(map);
+			MarkersCreator.createMarkersReal(map, cb);
 		});
 
 		// _.forEach(places, (place) => {
@@ -154,12 +154,16 @@ export const MarkersCreator = {
 				place: place,
 				id: place.id,
 				draggable: false,
+				visible: true,
 				icon
 			}, function(marker) {
 				totalMarkersReady++;
 				marker.set('index', marker.get('place').idx);
+				marker.set('markerIndex', markers.length);
+				marker.set('animated', false);
+				// marker.setVisible(false);
 				// animate marker
-				marker.setAnimation(plugin.google.maps.Animation.POPOUT);
+				// marker.setAnimation(plugin.google.maps.Animation.POPOUT);
 				markers.push(marker);
 				marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
 				if (totalMarkersReady >= needToMakeMarkers) {
@@ -208,13 +212,15 @@ export const MarkersCreator = {
 
 	setMarkerImage: function(marker, place, active, idx) {
 		let {icon, anchor} = MarkersCreator.getMarkerImage(place, active, idx);
+		// console.log('[setMarkerImage] icon = ', icon);
 		marker.setIcon(icon);
 		marker.setIconAnchor(anchor.x, anchor.y)
 	},
 
 	onMarkerClick: function(marker) {
-	// console.log('[onMarkerClick] place = ', marker.get('place'));
-		var idx = marker.get('index');
+		console.log('[onMarkerClick] place = ', marker.get('place'));
+		let markerIndex = marker.get('markerIndex');
+		let placeIdx = marker.get('index');
 		if (activeMarkerIdx > -1) {
 			let
 				oldActiveMarker = markers[activeMarkerIdx],
@@ -223,12 +229,8 @@ export const MarkersCreator = {
 			MarkersCreator.setMarkerImage(oldActiveMarker, oldPlace, false);
 		}
 		marker.setZIndex(5);
-		MarkersCreator.setMarkerImage(marker, marker.get('place'), true, idx);
-		// let icon = MarkersCreator.getMarkerImage(marker.get('place'), true, idx);
-		// oldActiveMarker.setIcon(icon);
-		// oldActiveMarker.setIconAnchor(icon.anchor.x, icon.anchor.y)
-		activeMarkerIdx = idx;
-		// marker.set
+		MarkersCreator.setMarkerImage(marker, marker.get('place'), true, placeIdx);
+		activeMarkerIdx = markerIndex;
 	}
 }
 
