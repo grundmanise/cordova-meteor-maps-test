@@ -7,6 +7,7 @@ import { PlaceTypes } from '/client/helpers/placeTypes';
 import { RenderSVG } from '/client/helpers/renderSVG';
 import { RenderText } from '/client/helpers/renderText';
 import { MarkersCreator } from '/client/helpers/markers';
+import { clusterImage320 } from '/client/helpers/cluster.js';
 import './main.html';
 
 var
@@ -94,8 +95,21 @@ function onAllMarkersReady() {
 
 Template.map.events({
 	'click #button': function(e, t) {
+		// textColor: '#85B1D7',
+		// url: '/svg/map/ic/ic_cluster.svg',
+		// width: markerSize,
+		// height: markerSize,
+		// anchor: [0, 0],
+		// textSize: 15
+		let size = Math.floor($(window).width() / 7);
+		let style = {
+			img: clusterImage320,
+			size,
+			fontSize: 15,
+			textColor: '#85B1D7'
+		}
 		// markers[43].setAnimation(plugin.google.maps.Animation.POPOUT, function(res){console.log('res = ', res);} );
-		plugin.google.maps.Map.startClustering(function(res) {
+		plugin.google.maps.Map.startClustering(style, function(res) {
 			console.log('clustering res');
 		});
 	}
