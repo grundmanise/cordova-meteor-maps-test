@@ -2,22 +2,22 @@ import { RenderText } from '/client/helpers/renderText';
 import { RenderSVG } from '/client/helpers/renderSVG';
 
 var
-	markers = [], //markers array
-	markerImages, //hash of base64-encoded png images of marker types
-	activeMarkerIdx = -1, // current active marker
-	markerSize,
-	totalMarkersReady = 0,
-	needToMakeMarkers,
-	markerCanvasWidth,
-	markerCanvasHeight,
-	placeIdx = 0,
-	placesQueue;
+    markers = [], //markers array
+    markerImages, //hash of base64-encoded png images of marker types
+    activeMarkerIdx = -1, // current active marker
+    markerSize,
+    totalMarkersReady = 0,
+    needToMakeMarkers,
+    markerCanvasWidth,
+    markerCanvasHeight,
+    placeIdx = 0,
+    placesQueue;
 
 var
-	targetCanvas,
-	stringCanvas,
-	wordCanvas,
-	compositeCanvas;
+    targetCanvas,
+    stringCanvas,
+    wordCanvas,
+    compositeCanvas;
 
 // window.markerImages = markerImages;
 window.markers = markers;
@@ -25,212 +25,224 @@ window.markers = markers;
 
 
 function setImmediate(cb) {
-	Meteor.setTimeout(cb, 0);
+    Meteor.setTimeout(cb, 0);
 }
 
 export const MarkersCreator = {
-	init: function(ms) {
-		markerSize = ms;
-		RenderSVG.init(ms);
-	},
+    init: function(ms) {
+        markerSize = ms;
+        RenderSVG.init(ms);
+    },
 
-	createMarkers: function(places, placeTypes, map, cb) {
-		console.time('typeRender');
-		let canvas = document.createElement('canvas');
-		RenderText.resizeAndClearCanvas(canvas, markerSize*3, markerSize*3);
-		RenderSVG.renderPlaceTypes(placeTypes, canvas, (imgs) => {
-			// console.log('[MarkersCreator.createMarkers] types rendered');
-			console.timeEnd('typeRender');
-			markerImages = imgs;
-			window.markerImages = markerImages;
-			markerCanvasWidth = canvas.width;
-			markerCanvasHeight = canvas.height;
-			MarkersCreator.prepareTexts(places, map, cb);
-		});
+    createMarkers: function(places, placeTypes, map, cb) {
+        console.time('typeRender');
+        let canvas = document.createElement('canvas');
+        RenderText.resizeAndClearCanvas(canvas, markerSize * 3, markerSize * 3);
+        RenderSVG.renderPlaceTypes(placeTypes, canvas, (imgs) => {
+            // console.log('[MarkersCreator.createMarkers] types rendered');
+            console.timeEnd('typeRender');
+            markerImages = imgs;
+            window.markerImages = markerImages;
+            markerCanvasWidth = canvas.width;
+            markerCanvasHeight = canvas.height;
+            MarkersCreator.prepareTexts(places, map, cb);
+        });
 
-	},
+    },
 
-	prepareTexts: function(places, map, cb) {
-		console.time('textRender');
-		targetCanvas = document.createElement('canvas');
-		stringCanvas = document.createElement('canvas');
-		wordCanvas = document.createElement('canvas');
-		compositeCanvas = document.createElement('canvas');
-		document.body.appendChild(compositeCanvas);
-		placesQueue = places;
+    prepareTexts: function(places, map, cb) {
+        console.time('textRender');
+        targetCanvas = document.createElement('canvas');
+        stringCanvas = document.createElement('canvas');
+        wordCanvas = document.createElement('canvas');
+        compositeCanvas = document.createElement('canvas');
+        document.body.appendChild(compositeCanvas);
+        placesQueue = places;
 
-		MarkersCreator.prepareTextWorker(() => {
-			console.timeEnd('textRender');
-			MarkersCreator.createMarkersReal(map, cb);
-		});
+        MarkersCreator.prepareTextWorker(() => {
+            console.timeEnd('textRender');
+            MarkersCreator.createMarkersReal(map, cb);
+        });
 
-		// _.forEach(places, (place) => {
-		// 	let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
-		// 	if (!markerTypeId || !markerImages[markerTypeId])
-		// 		return;
-		// 	let markerImage = markerImages[markerTypeId].iconMapActiveBase64;
-		// });
+        // _.forEach(places, (place) => {
+        // 	let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
+        // 	if (!markerTypeId || !markerImages[markerTypeId])
+        // 		return;
+        // 	let markerImage = markerImages[markerTypeId].iconMapActiveBase64;
+        // });
 
-	},
+    },
 
-	prepareTextWorker: function(cb) {
-		let place = placesQueue[placeIdx];
-		if (!place) {
-			// we're finished
-			if (cb)
-				cb();
-			return;
-		}
+    prepareTextWorker: function(cb) {
+        let place = placesQueue[placeIdx];
+        if (!place) {
+            // we're finished
+            if (cb)
+                cb();
+            return;
+        }
 
-		let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
-		if (!markerTypeId || !markerImages[markerTypeId]) {
-			placeIdx++;
-			setImmediate(() => {
-				MarkersCreator.prepareTextWorker(cb);
-			})
-			return;
-		}
+        let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
+        if (!markerTypeId || !markerImages[markerTypeId]) {
+            placeIdx++;
+            setImmediate(() => {
+                MarkersCreator.prepareTextWorker(cb);
+            })
+            return;
+        }
 
-		let markerImage = markerImages[markerTypeId].iconMapActiveBase64;
-		let textParams = {
-			maxWidth: 300,
-			wordSpacing: 5,
-			lineSpacing: 2,
-			fontSize: 30
-		};
+        let markerImage = markerImages[markerTypeId].iconMapActiveBase64;
+        let textParams = {
+            maxWidth: 300,
+            wordSpacing: 5,
+            lineSpacing: 2,
+            fontSize: 30
+        };
 
-		let {width, height} = RenderText.renderText(place.caption, targetCanvas, stringCanvas, wordCanvas, textParams);
-		MarkersCreator.makeTextComposite(compositeCanvas, markerImage, targetCanvas, width, height, (targetWidth, targetHeight) => {
-			placesQueue[placeIdx].activeImage = {
-				img: compositeCanvas.toDataURL("image/png"),
-				w: targetWidth/2,
-				h: targetHeight/2,
-				aW: targetWidth/4,
-				aH: markerCanvasHeight/2
-			};
-			placesQueue[placeIdx].idx = placeIdx;
-			placeIdx++;
-			setImmediate(() => {
-				MarkersCreator.prepareTextWorker(cb);
-			});
-		});
-	},
+        let { width, height } = RenderText.renderText(place.caption, targetCanvas, stringCanvas, wordCanvas, textParams);
+        MarkersCreator.makeTextComposite(compositeCanvas, markerImage, targetCanvas, width, height, (targetWidth, targetHeight) => {
+            placesQueue[placeIdx].activeImage = {
+                img: compositeCanvas.toDataURL("image/png"),
+                w: targetWidth / 2,
+                h: targetHeight / 2,
+                aW: targetWidth / 4,
+                aH: markerCanvasHeight / 2
+            };
+            placesQueue[placeIdx].idx = placeIdx;
+            placeIdx++;
+            setImmediate(() => {
+                MarkersCreator.prepareTextWorker(cb);
+            });
+        });
+    },
 
-	makeTextComposite: function(canvas, markerImage, targetCanvas, width, height, cb) {
-		let
-			delta = 5,
-			targetWidth = Math.max(width, markerCanvasWidth),
-			targetHeight = markerCanvasHeight + 3*delta + height,
-			markerX = Math.floor((targetWidth - markerCanvasWidth) / 2),
-			textX = Math.floor((targetWidth - width) / 2),
-			textY = markerCanvasHeight + delta;
-		RenderText.resizeAndClearCanvas(canvas, targetWidth, targetHeight);
-		let ctx = canvas.getContext('2d');
-		ctx.drawImage(targetCanvas, textX, textY);
+    makeTextComposite: function(canvas, markerImage, targetCanvas, width, height, cb) {
+        let
+            delta = 5,
+            targetWidth = Math.max(width, markerCanvasWidth),
+            targetHeight = markerCanvasHeight + 3 * delta + height,
+            markerX = Math.floor((targetWidth - markerCanvasWidth) / 2),
+            textX = Math.floor((targetWidth - width) / 2),
+            textY = markerCanvasHeight + delta;
+        RenderText.resizeAndClearCanvas(canvas, targetWidth, targetHeight);
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(targetCanvas, textX, textY);
 
-		let img = new Image();
-		img.onload = () => {
-			ctx.drawImage(img, markerX, 0);
-			if (cb)
-				cb(targetWidth, targetHeight);
-		}
-		img.src = markerImage;
-	},
+        let img = new Image();
+        img.onload = () => {
+            ctx.drawImage(img, markerX, 0);
+            if (cb)
+                cb(targetWidth, targetHeight);
+        }
+        img.src = markerImage;
+    },
 
-	createMarkersReal: function(map, cb) {
-		console.time('markerCreate');
-		let places = placesQueue;
-		needToMakeMarkers = places.length;
-		_.forEach(places, (place) => {
-			let {icon, anchor} = MarkersCreator.getMarkerImage(place, false);
-			if (!icon) {
-				needToMakeMarkers--;
-				return;
-			}
-			map.addMarker({
-				// no title => no infowindow!
-				// title: place.caption,
-				position: new plugin.google.maps.LatLng(place.latitude, place.longitude),
-				place: place,
-				id: place.id,
-				draggable: false,
-				visible: true,
-				icon
-			}, function(marker) {
-				totalMarkersReady++;
-				marker.set('index', marker.get('place').idx);
-				marker.set('markerIndex', markers.length);
-				marker.set('animated', false);
-				// marker.setVisible(false);
-				// animate marker
-				// marker.setAnimation(plugin.google.maps.Animation.POPOUT);
-				markers.push(marker);
-				marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
-				if (totalMarkersReady >= needToMakeMarkers) {
-					console.timeEnd('markerCreate');
-					if (cb)
-						cb();
-				}
-			});
-		});
-	},
+    createMarkersReal: function(map, cb) {
+        console.time('markerCreate');
+        let places = placesQueue;
+        needToMakeMarkers = places.length;
+        _.forEach(places, (place) => {
+            let { icon, anchor } = MarkersCreator.getMarkerImage(place, false);
+            if (!icon) {
+                needToMakeMarkers--;
+                return;
+            }
+            map.addMarker({
+                // no title => no infowindow!
+                // title: place.caption,
+                position: new plugin.google.maps.LatLng(place.latitude, place.longitude),
+                place: place,
+                id: place.id,
+                draggable: false,
+                visible: true,
+                icon
+            }, function(marker) {
+                totalMarkersReady++;
+                marker.set('index', marker.get('place').idx);
+                marker.set('markerIndex', markers.length);
+                marker.set('animated', true);
+                // marker.setVisible(true);
+                // animate marker
+                marker.setAnimation(plugin.google.maps.Animation.POPOUT);
+                markers.push(marker);
 
-	getMarkerImage: function(place, active, idx) {
-		let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
-		if (!markerTypeId || !markerImages[markerTypeId])
-			return {icon: false, anchor: false};
-		let field = active ? 'iconMapActiveBase64' : 'iconMapBase64';
-		let icon = markerImages[markerTypeId][field];
-		if (active)
-			return {
-				icon: {
-					url: placesQueue[idx].activeImage.img,
-					size: {
-						width: placesQueue[idx].activeImage.w,
-						height: placesQueue[idx].activeImage.h
-					}
-				},
-				anchor: {
-					x: placesQueue[idx].activeImage.aW,
-					y: placesQueue[idx].activeImage.aH
-				}
-			};
-		return {
-			icon: {
-				url: icon,
-				size: {
-					width: markerSize,
-					height: markerSize
-				}
-			},
-			anchor: {
-				x: markerSize/2,
-				y: markerSize
-			}
-		};
-	},
+                map.on('hideInactive', function() {
+                    const place = marker.get('place');
+                    marker.setVisible(place.switched ? true : false);
+                });
 
-	setMarkerImage: function(marker, place, active, idx) {
-		let {icon, anchor} = MarkersCreator.getMarkerImage(place, active, idx);
-		// console.log('[setMarkerImage] icon = ', icon);
-		marker.setIcon(icon);
-		marker.setIconAnchor(anchor.x, anchor.y)
-	},
+                map.on('showInactive', function() {
+                    marker.setVisible(true);
+                });
 
-	onMarkerClick: function(marker) {
-		console.log('[onMarkerClick] place = ', marker.get('place'));
-		let markerIndex = marker.get('markerIndex');
-		let placeIdx = marker.get('index');
-		if (activeMarkerIdx > -1) {
-			let
-				oldActiveMarker = markers[activeMarkerIdx],
-				oldPlace = oldActiveMarker.get('place');
-			oldActiveMarker.setZIndex(0);
-			MarkersCreator.setMarkerImage(oldActiveMarker, oldPlace, false);
-		}
-		marker.setZIndex(5);
-		MarkersCreator.setMarkerImage(marker, marker.get('place'), true, placeIdx);
-		activeMarkerIdx = markerIndex;
-	}
+                marker.addEventListener(plugin.google.maps.event.MARKER_CLICK, MarkersCreator.onMarkerClick);
+                if (totalMarkersReady >= needToMakeMarkers) {
+                    console.timeEnd('markerCreate');
+                    if (cb)
+                        cb();
+                }
+
+
+
+            });
+        });
+    },
+
+    getMarkerImage: function(place, active, idx) {
+        let markerTypeId = place.type.parent ? place.type.parent.id : place.type.id;
+        if (!markerTypeId || !markerImages[markerTypeId])
+            return { icon: false, anchor: false };
+        let field = active ? 'iconMapActiveBase64' : 'iconMapBase64';
+        let icon = markerImages[markerTypeId][field];
+        if (active)
+            return {
+                icon: {
+                    url: placesQueue[idx].activeImage.img,
+                    size: {
+                        width: placesQueue[idx].activeImage.w,
+                        height: placesQueue[idx].activeImage.h
+                    }
+                },
+                anchor: {
+                    x: placesQueue[idx].activeImage.aW,
+                    y: placesQueue[idx].activeImage.aH
+                }
+            };
+        return {
+            icon: {
+                url: icon,
+                size: {
+                    width: markerSize,
+                    height: markerSize
+                }
+            },
+            anchor: {
+                x: markerSize / 2,
+                y: markerSize
+            }
+        };
+    },
+
+    setMarkerImage: function(marker, place, active, idx) {
+        let { icon, anchor } = MarkersCreator.getMarkerImage(place, active, idx);
+        // console.log('[setMarkerImage] icon = ', icon);
+        marker.setIcon(icon);
+        marker.setIconAnchor(anchor.x, anchor.y)
+    },
+
+    onMarkerClick: function(marker) {
+        console.log('[onMarkerClick] place = ', marker.get('place'));
+        let markerIndex = marker.get('markerIndex');
+        let placeIdx = marker.get('index');
+        if (activeMarkerIdx > -1) {
+            let
+                oldActiveMarker = markers[activeMarkerIdx],
+                oldPlace = oldActiveMarker.get('place');
+            oldActiveMarker.setZIndex(0);
+            MarkersCreator.setMarkerImage(oldActiveMarker, oldPlace, false);
+        }
+        marker.setZIndex(5);
+        MarkersCreator.setMarkerImage(marker, marker.get('place'), true, placeIdx);
+        activeMarkerIdx = markerIndex;
+    },
 }
-
